@@ -12,7 +12,7 @@ const path         = require('path');
 
 mongoose.Promise = Promise;
 mongoose
-  .connect('mongodb://localhost/irongramback', {useMongoClient: true})
+  .connect(process.env.DB, {useMongoClient: true})
   .then(() => {
     console.log('Connected to Mongo!')
   }).catch(err => {
@@ -24,11 +24,20 @@ const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.
 
 const app = express();
 
+const cors = require('cors')
+app.use(cors())
+
 // Middleware Setup
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+//passport
+const passport = require('./helpers/passport')
+app.use(passport.initialize())
+app.use(passport.session())
+
 
 // Express View engine setup
 
@@ -52,6 +61,8 @@ app.locals.title = 'Express - Generated with IronGenerator';
 
 
 const index = require('./routes/index');
+const auth = require('./routes/auth')
+app.use('/', auth)
 app.use('/', index);
 
 
