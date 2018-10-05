@@ -7,6 +7,10 @@ const userSchema = new Schema({
         type: String,
         required:true
     },
+    following:[{
+        type:Schema.Types.ObjectId,
+        ref:"User"
+    }],
     email: String,
     photoURL: String,
     pictures:[
